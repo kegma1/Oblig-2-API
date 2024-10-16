@@ -1,7 +1,11 @@
-
-
 public class AuthorRepository : IAuthorRepository
 {
+    private readonly LibraryDbContext _context;
+
+    public AuthorRepository(LibraryDbContext context) {
+        _context = context;
+    }
+
     public void AddAuthor(Author author)
     {
         throw new NotImplementedException();

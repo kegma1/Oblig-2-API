@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using oblig1.Data;
 
 #nullable disable
 
 namespace Oblig_2_API.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20241016091225_InitialCreate")]
+    [Migration("20241016102228_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
