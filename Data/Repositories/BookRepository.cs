@@ -33,6 +33,10 @@ public class BookRepository : IBookRepository
         return _context.Book.Include(b => b.Author).ToList();
     }
 
+    public IEnumerable<Book> GetBooksByAuthorId(int id) {
+        return _context.Book.Where(b => b.AuthorId == id).ToList();
+    }
+
     public Book? GetBookById(int id)
     {
         return _context.Book.Include(b => b.Author).FirstOrDefault(b => b.Id == id);

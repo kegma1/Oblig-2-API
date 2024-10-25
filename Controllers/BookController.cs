@@ -21,6 +21,30 @@ public class BookController : Controller {
         return Ok(books);
     }
 
+    [HttpGet("{id}")]
+    public ActionResult<IEnumerable<Book>> GetBooksById(int id) {
+        var book = _bookRepository.GetBookById(id);
+
+        if (book == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(book);
+    }
+
+    [HttpGet("Author/{id}")]
+    public ActionResult<IEnumerable<Book>> GetBooksByAuthor(int id) {
+        var books = _bookRepository.GetBooksByAuthorId(id);
+
+        if (books == null || !books.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(books);
+    }
+
     [HttpPost]
     public ActionResult<Book> PostBook(Book book) {
         _bookRepository.AddBook(book);
@@ -40,7 +64,7 @@ public class BookController : Controller {
 
         _bookRepository.UpdateBook(newBook);
 
-        return NoContent();
+        return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
     }
 
     [HttpDelete("{id}")]
@@ -52,6 +76,6 @@ public class BookController : Controller {
 
         _bookRepository.DeleteBook(id);
 
-        return NoContent();
+        return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
     }
 }

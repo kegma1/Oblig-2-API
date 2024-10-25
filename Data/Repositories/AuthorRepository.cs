@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 public class AuthorRepository : IAuthorRepository
 {
     private readonly LibraryDbContext _context;
@@ -8,26 +10,48 @@ public class AuthorRepository : IAuthorRepository
 
     public void AddAuthor(Author author)
     {
-        throw new NotImplementedException();
+        _context.Author.Add(author);
+        _context.SaveChanges();
     }
 
     public void DeleteAuthor(int id)
     {
-        throw new NotImplementedException();
+        var author = GetAuthorById(id);
+
+        if (author != null) {
+            var booksByAuthor = _context.Book.Where(b => b.AuthorId == id).ToList();
+            
+            if (booksByAuthor.Any()) {
+                _context.Book.RemoveRange(booksByAuthor);
+            }
+
+            _context.Author.Remove(author);
+
+            _context.SaveChanges();
+        }
     }
 
     public IEnumerable<Author> GetAllAuthors()
     {
-        throw new NotImplementedException();
+        return _context.Author.ToList();
     }
 
     public Author GetAuthorById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Author.FirstOrDefault(a => a.Id == id);
     }
 
     public void UpdateAuthor(Author author)
     {
-        throw new NotImplementedException();
+        var existingAuthor = GetAuthorById(author.Id);
+
+        if (existingAuthor == null) {
+            throw new InvalidOperationException("author not found");
+        }
+
+        existingAuthor.FirstName = author.FirstName;
+        existingAuthor.LastName = author.LastName;
+
+        _context.SaveChanges();
     }
 }

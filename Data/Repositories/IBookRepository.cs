@@ -5,4 +5,5 @@ public interface IBookRepository
     void AddBook(Book book);
     void UpdateBook(Book book);
     void DeleteBook(int id);
+    public IEnumerable<Book> GetBooksByAuthorId(int id);
 }
