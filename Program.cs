@@ -2,13 +2,18 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,6 +32,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library API V1");
     });
 }
+
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
