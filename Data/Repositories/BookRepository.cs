@@ -1,4 +1,4 @@
-
+using Microsoft.EntityFrameworkCore;
 
 public class BookRepository : IBookRepository
 {
@@ -10,6 +10,10 @@ public class BookRepository : IBookRepository
 
     public void AddBook(Book book)
     {
+        if (book.Author != null) {
+            _context.Author.Attach(book.Author);
+        }
+
         _context.Book.Add(book);
         _context.SaveChanges();
     }
@@ -26,17 +30,34 @@ public class BookRepository : IBookRepository
 
     public IEnumerable<Book> GetAllBooks()
     {
-        return _context.Book.ToList();
+        return _context.Book.Include(b => b.Author).ToList();
     }
 
     public Book? GetBookById(int id)
     {
-        return _context.Book.FirstOrDefault(b => b.Id == id);
+        return _context.Book.Include(b => b.Author).FirstOrDefault(b => b.Id == id);
     }
 
     public void UpdateBook(Book book)
     {
-        _context.Book.Update(book);
+        var existingBook = GetBookById(book.Id);
+
+        if (existingBook == null) {
+            throw new InvalidOperationException("book not found");
+        }
+
+        existingBook.Title = book.Title;
+        existingBook.Description = book.Description;
+        existingBook.Year = book.Year;
+
+        if (existingBook.AuthorId != book.AuthorId) {
+            var newAuthor = _context.Author.Find(book.AuthorId);
+            if (newAuthor != null) {
+                existingBook.Author = newAuthor;
+                existingBook.AuthorId = book.AuthorId;
+            }
+        }
+        
         _context.SaveChanges();
     }
 }

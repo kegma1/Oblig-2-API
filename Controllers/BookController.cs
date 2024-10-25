@@ -26,4 +26,32 @@ public class BookController : Controller {
         _bookRepository.AddBook(book);
         return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateBook(int id, Book newBook) {
+        if (id != newBook.Id) {
+            return BadRequest("Mismatched book ID");
+        }
+
+        var book = _bookRepository.GetBookById(id);
+        if (book == null) {
+            return NotFound();
+        }
+
+        _bookRepository.UpdateBook(newBook);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteBook(int id) {
+        var book = _bookRepository.GetBookById(id);
+        if (book == null) {
+            return NotFound();
+        }
+
+        _bookRepository.DeleteBook(id);
+
+        return NoContent();
+    }
 }
