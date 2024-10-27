@@ -34,7 +34,7 @@ public class BookRepository : IBookRepository
     }
 
     public IEnumerable<Book> GetBooksByAuthorId(int id) {
-        return _context.Book.Where(b => b.AuthorId == id).ToList();
+        return _context.Book.Where(b => b.AuthorId == id).Include(b => b.Author).ToList();
     }
 
     public Book? GetBookById(int id)
